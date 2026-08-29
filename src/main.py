@@ -29,7 +29,6 @@ try:
                 center_y = (y1 + y2) // 2
                 centroids.append((center_x, center_y))
                 boxes.append(box)
-
         tracked = tracker.update(centroids)       # TRACK: cocokkan + kasih ID
         # gambar tiap orang yang ke-track
         for obj_id, (cx, cy) in tracked.items():
