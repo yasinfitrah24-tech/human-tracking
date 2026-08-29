@@ -1,0 +1,12 @@
+# Virtual environment
+env/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Media / test files
+*.jpg
+*.jpeg
+*.png
