@@ -1,12 +1,18 @@
+tempCodeRunnerFile.py
+__pycache__/
+tempCodeRunnerFile.py
+
+# File media & output (bukan kode)
+*.jpg
+*.png
+*.txt
+*.jpeg
+
 # Virtual environment
 env/
 venv/
-
-# Python cache
 __pycache__/
 *.pyc
 
-# Media / test files
-*.jpg
-*.jpeg
-*.png
+# Model files besar (kalau ada)
+*.task
