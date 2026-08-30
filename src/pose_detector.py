@@ -22,11 +22,19 @@ class PoseDetector:
                 frame, self.hasil.pose_landmarks, self.mp_pose.POSE_CONNECTIONS)
         return frame
 
-    def bounding_box(self, frame):
-        # BONUS: kotak dari landmark (min/max, #47) — None kalau nggak ada
-        if not self.hasil.pose_landmarks:
+    def bounding_box(self, frame, min_visibility=0.5):
+        if self.hasil is None or not self.hasil.pose_landmarks:
             return None
         tinggi, lebar, _ = frame.shape
-        xs = [lm.x * lebar for lm in self.hasil.pose_landmarks.landmark]
-        ys = [lm.y * tinggi for lm in self.hasil.pose_landmarks.landmark]
+
+        xs, ys = [], []
+        for lm in self.hasil.pose_landmarks.landmark:
+            if lm.visibility < min_visibility:     # buang landmark tebakan
+                continue
+            xs.append(lm.x * lebar)
+            ys.append(lm.y * tinggi)
+
+        if len(xs) < 2:                            # nggak cukup titik valid
+            return None
+
         return int(min(xs)), int(min(ys)), int(max(xs)), int(max(ys))
