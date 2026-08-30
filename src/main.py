@@ -51,7 +51,10 @@ try:
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
             cv2.putText(frame, f"{position} - {distance}", (20, 40),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-
+# info global (di luar loop — sekali per frame)
+        cv2.putText(frame, f"Entries: {tracker.next_id}", (20, 80),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+        
         cv2.imshow("Human Tracking", frame)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
