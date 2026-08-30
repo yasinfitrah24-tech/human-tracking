@@ -1,7 +1,7 @@
 import cv2
 from pose_detector import PoseDetector
 from tracker import CentroidTracker          # ← import tracker
-from decision import classify_position, classify_distance   # ← import dari modul baru
+from decision import classify_position, classify_distance, classify_movement, classify_approach   # ← import dari modul baru
 
 
 detector = PoseDetector()
@@ -20,6 +20,7 @@ try:
         frame_height, frame_width, _ = frame.shape
         centroids = []                            # centroid deteksi frame ini
         boxes = []  
+        heights = []                       # ← baru
 
         if detector.detect(frame):                # SENSE
             box = detector.bounding_box(frame)
@@ -28,17 +29,20 @@ try:
                 center_x = (x1 + x2) // 2
                 center_y = (y1 + y2) // 2
                 centroids.append((center_x, center_y))
+                heights.append(y2 - y1)     # ← tinggi box
                 boxes.append(box)
-        tracked = tracker.update(centroids)       # TRACK: cocokkan + kasih ID
+
+        tracked = tracker.update(centroids, heights)       # TRACK: cocokkan + kasih ID
         # gambar tiap orang yang ke-track
         for obj_id, (cx, cy) in tracked.items():
             cv2.circle(frame, (cx, cy), 8, (0, 0, 255), -1)
-            cv2.putText(frame, f"Person {obj_id}", (cx - 40, cy - 20),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
-        # gambar jejak (trail) tiap orang
+            movement = classify_movement(tracker.history.get(obj_id, []))   # arah gerak
+            approach = classify_approach(tracker.history.get(obj_id, []))
+            cv2.putText(frame, f"P{obj_id}: {movement} | {approach}", (cx - 80, cy - 20),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)        # gambar jejak (trail) tiap orang
         for obj_id, points in tracker.history.items():
             for i in range(1, len(points)):
-                cv2.line(frame, points[i-1], points[i], (255, 0, 255), 2)
+                cv2.line(frame, points[i-1][:2], points[i][:2], (255, 0, 255), 2)        
         # gambar box + keputusan posisi/jarak
         for (x1, y1, x2, y2) in boxes:
             position = classify_position((x1 + x2) // 2, frame_width)   # DECIDE
