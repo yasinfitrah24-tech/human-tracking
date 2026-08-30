@@ -1,3 +1,6 @@
+import math
+
+
 def classify_position(center_x, frame_width):
     # decide: LEFT / CENTER / RIGHT from horizontal position
     if center_x < frame_width * 0.33:
@@ -46,3 +49,13 @@ def classify_approach(history, threshold=15, lookback=10):
         return "MOVING AWAY"      # box mengecil = menjauh
     else:
         return "STILL"
+def calculate_speed(history, lookback=10):
+    if len(history) < 2:
+        return 0.0
+
+    n = min(lookback, len(history))
+    titik_baru = history[-1][:2]        # (x, y) — buang h
+    titik_lama = history[-n][:2]
+
+    jarak = math.dist(titik_lama, titik_baru)   # √(dx² + dy²) otomatis
+    return jarak / n                             # pixel per frame

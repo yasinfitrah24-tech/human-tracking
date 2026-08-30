@@ -2,7 +2,7 @@ import cv2
 from pose_detector import PoseDetector
 from tracker import CentroidTracker          # ← import tracker
 from decision import classify_position, classify_distance, classify_movement, classify_approach   # ← import dari modul baru
-
+from decision import classify_position, classify_distance, classify_movement, classify_approach, calculate_speed
 
 detector = PoseDetector()
 tracker = CentroidTracker(max_distance=200)    # ← memori antar-frame
@@ -38,8 +38,9 @@ try:
             cv2.circle(frame, (cx, cy), 8, (0, 0, 255), -1)
             movement = classify_movement(tracker.history.get(obj_id, []))   # arah gerak
             approach = classify_approach(tracker.history.get(obj_id, []))
-            cv2.putText(frame, f"P{obj_id}: {movement} | {approach}", (cx - 80, cy - 20),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)        # gambar jejak (trail) tiap orang
+            speed = calculate_speed(tracker.history.get(obj_id, []))
+            cv2.putText(frame, f"P{obj_id}: {movement} | {approach} | {speed:.1f} px/f",
+                        (cx - 100, cy - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
         for obj_id, points in tracker.history.items():
             for i in range(1, len(points)):
                 cv2.line(frame, points[i-1][:2], points[i][:2], (255, 0, 255), 2)        
