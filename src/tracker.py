@@ -20,6 +20,7 @@ class CentroidTracker:
                 if self.missing[obj_id] > self.max_missing:
                     del self.objects[obj_id]
                     del self.missing[obj_id]
+                    self.history.pop(obj_id, None)        # ← FIX 1
             return self.objects
 
         new_objects = {}
@@ -38,12 +39,12 @@ class CentroidTracker:
                     best_dist = dist
                     best_id = obj_id
 
-            if best_id is not None:                    # orang lama
+            if best_id is not None:
                 new_objects[best_id] = c
                 new_missing[best_id] = 0
                 used_ids.add(best_id)
                 self._record(best_id, c, heights[i])
-            else:                                      # orang baru
+            else:
                 new_objects[self.next_id] = c
                 new_missing[self.next_id] = 0
                 self._record(self.next_id, c, heights[i])
@@ -56,10 +57,12 @@ class CentroidTracker:
                 if miss <= self.max_missing:
                     new_objects[obj_id] = pos
                     new_missing[obj_id] = miss
+                else:
+                    self.history.pop(obj_id, None)        # ← FIX 2
 
         self.objects = new_objects
         self.missing = new_missing
-        return self.objects
+        return self.objects    
     def _record(self, obj_id, centroid, height=0):
         if obj_id not in self.history:
             self.history[obj_id] = []
