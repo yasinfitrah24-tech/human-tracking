@@ -7,6 +7,11 @@ robot control loop — the **act** part needs hardware and comes later.
 
 Part of my path toward robotics and embodied AI.
 
+![Demo](demo.gif)
+
+*Tracking a single person: stable ID, movement direction, approach detection,
+speed, and motion trail — running at ~25 FPS on CPU.*
+
 ## Features
 
 - **Person detection** — MediaPipe pose landmarks, wrapped in a reusable detector class
