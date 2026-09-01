@@ -7,7 +7,7 @@ robot control loop — the **act** part needs hardware and comes later.
 
 Part of my path toward robotics and embodied AI.
 
-![Demo](demo.gif)
+![Demo](docsdemo.gif)
 
 *Tracking a single person: stable ID, movement direction, approach detection,
 speed, and motion trail — running at ~25 FPS on CPU.*
